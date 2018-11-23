@@ -1,2 +1,2 @@
-# push_laravel_nodejs
+# Push Notification Laravel Nodejs
 Push Notification Laravel + Nodejs
