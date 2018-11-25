@@ -1,0 +1,64 @@
+# v2 syntax
+version: '2'
+
+# Named volumes
+volumes:
+  # MySQL Data
+  pushlaravel-mysql-data:
+    driver: local
+
+  # Redis Data
+  pushlaravel-redis-data:
+     driver: local
+
+services:
+  # MySQL (5.7)
+  mysql:
+    image: ambientum/mysql:5.7
+    container_name: pushlaravel-mysql
+    volumes:
+      - pushlaravel-mysql-data:/var/lib/mysql
+    ports:
+      - "3330:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=pushlaravel
+      - MYSQL_DATABASE=pushlaravel
+      - MYSQL_USER=pushlaravel
+      - MYSQL_PASSWORD=pushlaravel
+
+  # Redis
+  redis:
+    image: redis:4.0
+    container_name: pushlaravel-redis
+    command: --appendonly yes
+    volumes:
+      - pushlaravel-redis-data:/data
+    ports:
+      - "6379:6379"
+
+  # PHP
+  app:
+    image: ambientum/php:7.2-nginx
+    container_name: pushlaravel-app
+    volumes:
+      - .:/var/www/app
+    ports:
+      - "9100:8080"
+    links:
+      - mysql
+      - redis
+
+
+  # Nodejs and NPM
+  node:
+    image: node:8.12.0
+    container_name: pushlaravel-node
+    user: "node"
+    working_dir: /home/node/app/
+    tty: true
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/home/node/app/
+

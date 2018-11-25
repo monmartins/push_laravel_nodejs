@@ -1,0 +1,1 @@
+<push-notification-component></push-notification-component>
